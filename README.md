@@ -27,24 +27,24 @@ These are the steps to configure Filebeat with Logstash using SSL, mutual authen
 ### Logstash input beat configuration (files ca.crt,server.crt, and server.key are needed).
 ```
 input {
-  beats {
-    port => 5044
-    ssl => true
-    ssl_certificate_authorities => ["/etc/ca.crt"]
-    ssl_certificate => "/etc/server.crt"
-    ssl_key => "/etc/server.key"
-    ssl_verify_mode => "force_peer"
-  }
+   beats { 
+      port => "5044"
+      ssl => true
+      ssl_certificate_authorities => ["/Users/localdisk/elastic/certificates/ca.crt"]
+      ssl_certificate => "/Users/localdisk/elastic/certificates/server.crt"
+      ssl_key => "/Users/localdisk/elastic/certificates/server.key"
+      ssl_verify_mode => "force_peer"
+   }
 }
 ```
 
 ### Filebeat output (SSL) configuration (files ca.crt, client.crt and client.key are needed).
 ```
 output.logstash:
-  hosts: ["logs.mycompany.com:5044"]
-  ssl.certificate_authorities: ["/etc/ca.crt"]
-  ssl.certificate: "/etc/client.crt"
-  ssl.key: "/etc/client.key"
+  hosts: ["192.168.1.104:5044"]
+  ssl.certificate_authorities: ["/Users/localdisk/elastic/certificates/ca.crt"]
+  ssl.certificate: "/Users/localdisk/elastic/certificates/client.crt"
+  ssl.key: "/Users/localdisk/elastic/certificates/client.key"
 # ssl.key_passphrase: "PASSWORD"
   ssl.supported_protocols: "TLSv1.2"
 ```
@@ -84,6 +84,9 @@ DNS.1 = DOMAIN_1
 DNS.2 = DOMAIN_2
 DNS.3 = DOMAIN_3
 DNS.4 = DOMAIN_4
+
+[ v3_ca ]
+subjectAltName = IP: 192.168.1.104
 ```
 
 ```bash
@@ -126,6 +129,9 @@ extendedKeyUsage = serverAuth, clientAuth
 [v3_req]
 keyUsage = keyEncipherment, dataEncipherment
 extendedKeyUsage = serverAuth, clientAuth
+
+[ v3_ca ]
+subjectAltName = IP: 192.168.1.104
 ```
 ```
 openssl genrsa -out client.key 2048
