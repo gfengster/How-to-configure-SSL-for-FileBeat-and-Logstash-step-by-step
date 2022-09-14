@@ -96,6 +96,10 @@ echo "C2E9862A0DA8E970" > serial
 openssl x509 -days 3650 -req -sha512 -in server.csr -CAserial serial -CA ca.crt -CAkey ca.key -out server.crt -extensions v3_req -extfile server.conf
 mv server.key server.key.pem && openssl pkcs8 -in server.key.pem -topk8 -nocrypt -out server.key
 ```
+Run:
+```
+./bin/logstash -f ./logstash.conf 
+```
 
 ### FileBeat shipper (create files client.key and client.crt).
 
@@ -138,6 +142,11 @@ openssl genrsa -out client.key 2048
 openssl req -sha512 -new -key client.key -out client.csr -config client.conf
 openssl x509 -days 3650 -req -sha512 -in client.csr -CAserial serial -CA ca.crt -CAkey ca.key -out client.crt -extensions v3_req -extensions usr_cert  -extfile client.conf
 ```
+Run:
+```
+filebeat -c ./filebeat.yml
+```
+
 ```
 # If the client key is not encrypted by passphrase, it can always be added later (filebeat "ssl.key_passphrase").
 # openssl rsa -des -in client.key -out client4.key
